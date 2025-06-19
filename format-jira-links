@@ -1,0 +1,32 @@
+import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+EMAIL = os.getenv('JIRA_EMAIL')
+API_TOKEN = os.getenv('JIRA_API_TOKEN')
+JIRA_BASE_URL = os.getenv('JIRA_BASE_URL')
+
+# Your list of tickets
+ticket_ids = [
+    "CP-1554", "CP-1574", "CP-1583", "CP-1627", "CP-1771", "CP-1820",
+    "CP-1860", "CP-1903", "CP-1904", "CP-1905", "CP-1906"
+]
+
+def get_ticket_title(ticket_id):
+    url = f"{JIRA_BASE_URL}/rest/api/3/issue/{ticket_id}"
+    auth = (EMAIL, API_TOKEN)
+    headers = {"Accept": "application/json"}
+
+    response = requests.get(url, headers=headers, auth=auth)
+    if response.status_code == 200:
+        data = response.json()
+        title = data['fields']['summary']
+        return f"[[{ticket_id}] {title}]({JIRA_BASE_URL}/browse/{ticket_id})"
+    else:
+        return f"[[{ticket_id}] Title not found (HTTP {response.status_code})]({JIRA_BASE_URL}/browse/{ticket_id})"
+
+for ticket in ticket_ids:
+    print(get_ticket_title(ticket))
+
