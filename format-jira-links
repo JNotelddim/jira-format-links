@@ -28,5 +28,5 @@ def get_ticket_title(ticket_id):
         return f"[[{ticket_id}] Title not found (HTTP {response.status_code})]({JIRA_BASE_URL}/browse/{ticket_id})"
 
 for ticket in ticket_ids:
-    print(get_ticket_title(ticket))
+    print(get_ticket_title(ticket) + '\n')
 
